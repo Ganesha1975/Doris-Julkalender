@@ -309,54 +309,49 @@
   </div>
 
   <script>
-    async function fetchHtmlContent(filePath) {
-      try {
-        const response = await fetch(filePath);
-        if (!response.ok) {
-          throw new Error("Kunde inte läsa in HTML-filen");
-        }
-        const text = await response.text();
-        return text;
-      } catch (error) {
-        console.error(error);
-        return "<p>Denna lucka får du inte öppna än :).</p>";
-      }
+  async function fetchHtmlContent(filePath) {
+    try {
+      const response = await fetch(filePath);
+      if (!response.ok) throw new Error("Kunde inte läsa in filen");
+      return await response.text();
+    } catch (error) {
+      console.error(error);
+      return "<p>Texten kunde inte läsas in.</p>";
     }
+  }
 
-    document.addEventListener('DOMContentLoaded', () => {
-      for (let i = 1; i <= 24; i++) {
-        const door = document.getElementById(`door${i}`);
-        const image = document.getElementById(`image${i}`);
-        const popup = document.getElementById('popup');
-        const popupImage = document.getElementById('popupImage');
-        const popupText = document.getElementById('popupText');
+  document.addEventListener('DOMContentLoaded', () => {
+    const today = new Date();
+    const currentDay = today.getDate();
+    const currentMonth = today.getMonth();
 
-        if (door) {
-          door.addEventListener('click', async () => {
-            const imagePath = `image${i}.jpg`;
-            const htmlPath = `${i}.html`;
-
-            try {
-              const htmlContent = await fetchHtmlContent(htmlPath);
-              door.classList.add('opened');
-              image.classList.add('visible');
-              popupImage.src = imagePath;
-              popupText.innerHTML = htmlContent;
-              popup.style.display = 'block';
-            } catch (error) {
-              console.error("Fel vid öppning av lucka:", error);
-            }
-          });
-        }
-      }
-    });
-
-    function closePopup() {
+    for (let i = 1; i <= 24; i++) {
+      const door = document.getElementById(`door${i}`);
+      const image = document.getElementById(`image${i}`);
       const popup = document.getElementById('popup');
-      if (popup) {
-        popup.style.display = 'none';
+      const popupImage = document.getElementById('popupImage');
+      const popupText = document.getElementById('popupText');
+
+      if (door && image) {
+        if (currentMonth === 11 && i <= currentDay) {
+          door.addEventListener('click', async () => {
+            door.classList.add('opened');
+            image.classList.add('visible');
+            popup.style.display = 'block';
+            popupImage.src = `image${i}.jpg`;
+            popupText.innerHTML = await fetchHtmlContent(`${i}.html`);
+          });
+        } else {
+          door.style.pointerEvents = 'none';
+        }
       }
     }
-  </script>
+  });
+
+  function closePopup() {
+    const popup = document.getElementById('popup');
+    popup.style.display = 'none';
+  }
+</script>
 </body>
 </html>

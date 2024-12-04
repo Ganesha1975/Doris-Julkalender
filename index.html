@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Doris Julkalender</title>
+  <title>Julkalender</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -53,18 +53,10 @@
       align-items: center;
     }
 
-    .door .back {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      backface-visibility: hidden;
-      transform: rotateY(180deg);
-      display: flex;
-      justify-content: center;
-      align-items: center;
+    .door .front span {
       font-size: 1.5em;
       font-family: 'Georgia', serif;
-      color: red;
+      color: white;
     }
 
     .popup {
@@ -113,22 +105,6 @@
       margin: 0;
     }
 
-    .popup .text-content h1,
-    .popup .text-content h2,
-    .popup .text-content h3 {
-      margin-top: 15px;
-      margin-bottom: 10px;
-      font-family: 'Georgia', serif;
-      font-size: 22px;
-      font-weight: bold;
-      color: black;
-    }
-
-    .popup .text-content p {
-      margin-top: 10px;
-      margin-bottom: 10px;
-    }
-
     .popup .close {
       display: inline-block;
       margin-top: 15px;
@@ -138,6 +114,13 @@
       border-radius: 5px;
       cursor: pointer;
       font-size: 14px;
+    }
+
+    .popup a {
+      text-decoration: none;
+      color: blue;
+      display: inline-block;
+      margin-top: 15px;
     }
 
     .image-placeholder {

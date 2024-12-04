@@ -289,65 +289,72 @@
 </div>
 
   <div class="popup" id="popup">
-    <img id="popupImage" src="" alt="Bild">
-    <div class="text-content" id="popupText"></div>
-    <a id="popupLink" href="#" target="_blank">Dagens grej</a>
-    <div class="close" onclick="closePopup()">Stäng</div>
-  </div>
+  <img id="popupImage" src="" alt="Bild">
+  <div class="text-content" id="popupText"></div>
+  <a id="popupLink" href="#" target="_blank" style="display: none;">Dagens grej</a>
+  <div class="close" onclick="closePopup()">Stäng</div>
+</div>
 
   <script>
-    const today = new Date();
-    const currentDay = today.getDate();
-    const currentMonth = today.getMonth();
+document.addEventListener("DOMContentLoaded", () => {
+  const today = new Date();
+  const currentDay = today.getDate();
+  const currentMonth = today.getMonth();
 
-    for (let i = 1; i <= 24; i++) {
-      const door = document.getElementById(`door${i}`);
-      const image = document.getElementById(`image${i}`);
+  for (let i = 1; i <= 24; i++) {
+    const door = document.getElementById(`door${i}`);
+    const image = document.getElementById(`image${i}`);
+    const popup = document.getElementById("popup");
+    const popupImage = document.getElementById("popupImage");
+    const popupText = document.getElementById("popupText");
+    const popupLink = document.getElementById("popupLink");
 
-      if (door && image) {
-        if (currentMonth === 11 && i <= currentDay) {
-          door.addEventListener("click", () => {
-            door.classList.add("opened");
-            image.classList.add("visible");
-            openPopup(i);
-          });
-        } else {
-          door.style.pointerEvents = "none";
-        }
+    if (door) {
+      // Kontrollera om luckan är aktiverad för dagens datum
+      if (currentMonth === 11 && i <= currentDay) {
+        door.addEventListener("click", () => {
+          door.classList.add("opened"); // Öppna luckan
+          image.classList.add("visible"); // Visa dagens bild bakom luckan
+
+          // Sätt bild för popup
+          popupImage.src = `image${i}.jpg`;
+
+          // Läs in text från HTML-fil
+          fetch(`text${i}.html`)
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error(`Kunde inte läsa in text${i}.html`);
+              }
+              return response.text();
+            })
+            .then((data) => {
+              popupText.innerHTML = data;
+            })
+            .catch(() => {
+              popupText.innerHTML = "<p>Ingen text tillgänglig för denna dag.</p>";
+            });
+
+          // Sätt länk för PDF
+          popupLink.href = `present${i}.pdf`;
+          popupLink.style.display = "inline-block";
+
+          // Visa popup
+          popup.style.display = "block";
+        });
+      } else {
+        // Inaktivera framtida luckor
+        door.style.pointerEvents = "none";
       }
     }
+  }
+});
 
-   function openPopup(day) {
+function closePopup() {
   const popup = document.getElementById("popup");
-  const popupImage = document.getElementById("popupImage");
-  const popupText = document.getElementById("popupText");
-  const popupLink = document.getElementById("popupLink");
-
-  // Sätt bildens källa baserat på dagen
-  popupImage.src = `image${day}.jpg`;
-
-  // Läs in HTML-innehåll för text
-  fetch(`text${day}.html`)
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error(`Kunde inte läsa in text${day}.html`);
-      }
-      return response.text();
-    })
-    .then((data) => {
-      popupText.innerHTML = data;
-    })
-    .catch(() => {
-      popupText.innerHTML = "<p>Text saknas för denna dag.</p>";
-    });
-
-  // Sätt länk för dagens PDF
-  popupLink.href = `present${day}.pdf`;
-
-  // Visa popup
-  popup.style.display = "block";
+  if (popup) {
+    popup.style.display = "none"; // Stäng popup
+  }
 }
-
-  </script>
+</script>
 </body>
 </html>

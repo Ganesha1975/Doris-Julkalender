@@ -102,6 +102,20 @@
       line-height: 1.8;
       margin: 0;
     }
+    .popup .text-content h1,
+    .popup .text-content h2,
+    .popup .text-content h3 {
+      margin-top: 15px;
+      margin-bottom: 10px;
+      font-family: 'Georgia', serif;
+      font-size: 22px;
+      font-weight: bold;
+      color: black;
+    }
+    .popup .text-content p {
+      margin-top: 10px;
+      margin-bottom: 10px;
+    }
     .popup .close {
       display: inline-block;
       margin-top: 15px;
@@ -126,7 +140,7 @@
     }
   </style>
 </head>
-<body>
+<body>>
   <div class="calendar">
     <!-- Luckor och bilder 1–24 -->
     <div class="door closed" id="door1" style="top: 8%; left: 10%;">
@@ -272,49 +286,56 @@
 </div>
 <div class="image-placeholder" id="image24" style="top: 16%; left: 42%; background-image: url('image24.jpg');"></div>
 
-<!-- Popup -->
+</div>
+
   <div class="popup" id="popup">
     <img id="popupImage" src="" alt="Bild">
     <div class="text-content" id="popupText"></div>
-    <a id="popupLink" href="" target="_blank">Dagens grej</a>
+    <a id="popupLink" href="#" target="_blank">Dagens grej</a>
     <div class="close" onclick="closePopup()">Stäng</div>
   </div>
 
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const today = new Date();
-      const currentDay = today.getDate();
-      const currentMonth = today.getMonth();
+    const today = new Date();
+    const currentDay = today.getDate();
+    const currentMonth = today.getMonth();
 
-      for (let i = 1; i <= 24; i++) {
-        const door = document.getElementById(`door${i}`);
-        const image = document.getElementById(`image${i}`);
-        const popup = document.getElementById(`popup`);
+    for (let i = 1; i <= 24; i++) {
+      const door = document.getElementById(`door${i}`);
+      const image = document.getElementById(`image${i}`);
 
-        if (door && image) {
-          if (currentMonth === 11 && i <= currentDay) {
-            door.addEventListener('click', async () => {
-              door.classList.add('opened');
-              image.classList.add('visible');
-              const popupImage = document.getElementById('popupImage');
-              const popupText = document.getElementById('popupText');
-              const popupLink = document.getElementById('popupLink');
-              popupImage.src = `image${i}.jpg`;
-              const textResponse = await fetch(`text${i}.html`);
-              popupText.innerHTML = await textResponse.text();
-              popupLink.href = `present${i}.pdf`;
-              popup.style.display = 'block';
-            });
-          } else {
-            door.style.pointerEvents = 'none';
-          }
+      if (door && image) {
+        if (currentMonth === 11 && i <= currentDay) {
+          door.addEventListener("click", () => {
+            door.classList.add("opened");
+            image.classList.add("visible");
+            openPopup(i);
+          });
+        } else {
+          door.style.pointerEvents = "none";
         }
       }
-    });
+    }
+
+    function openPopup(day) {
+      const popup = document.getElementById("popup");
+      const popupImage = document.getElementById("popupImage");
+      const popupText = document.getElementById("popupText");
+      const popupLink = document.getElementById("popupLink");
+
+      popupImage.src = `image${day}.jpg`;
+      fetch(`text${day}.html`)
+        .then((response) => response.text())
+        .then((data) => (popupText.innerHTML = data))
+        .catch(() => (popupText.innerHTML = "Text saknas."));
+
+      popupLink.href = `present${day}.pdf`;
+      popup.style.display = "block";
+    }
 
     function closePopup() {
-      const popup = document.getElementById('popup');
-      popup.style.display = 'none';
+      const popup = document.getElementById("popup");
+      popup.style.display = "none";
     }
   </script>
 </body>

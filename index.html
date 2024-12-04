@@ -317,26 +317,37 @@
       }
     }
 
-    function openPopup(day) {
-      const popup = document.getElementById("popup");
-      const popupImage = document.getElementById("popupImage");
-      const popupText = document.getElementById("popupText");
-      const popupLink = document.getElementById("popupLink");
+   function openPopup(day) {
+  const popup = document.getElementById("popup");
+  const popupImage = document.getElementById("popupImage");
+  const popupText = document.getElementById("popupText");
+  const popupLink = document.getElementById("popupLink");
 
-      popupImage.src = `image${day}.jpg`;
-      fetch(`text${day}.html`)
-        .then((response) => response.text())
-        .then((data) => (popupText.innerHTML = data))
-        .catch(() => (popupText.innerHTML = "Text saknas."));
+  // Sätt bildens källa baserat på dagen
+  popupImage.src = `image${day}.jpg`;
 
-      popupLink.href = `present${day}.pdf`;
-      popup.style.display = "block";
-    }
+  // Läs in HTML-innehåll för text
+  fetch(`text${day}.html`)
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`Kunde inte läsa in text${day}.html`);
+      }
+      return response.text();
+    })
+    .then((data) => {
+      popupText.innerHTML = data;
+    })
+    .catch(() => {
+      popupText.innerHTML = "<p>Text saknas för denna dag.</p>";
+    });
 
-    function closePopup() {
-      const popup = document.getElementById("popup");
-      popup.style.display = "none";
-    }
+  // Sätt länk för dagens PDF
+  popupLink.href = `present${day}.pdf`;
+
+  // Visa popup
+  popup.style.display = "block";
+}
+
   </script>
 </body>
 </html>

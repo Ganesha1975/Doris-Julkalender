@@ -138,6 +138,73 @@
     .image-placeholder.visible {
       display: block;
     }
+    <style>
+/* Din befintliga CSS-kod */
+
+.door {
+  /* Existerande kod för luckor */
+}
+
+.popup {
+  /* Existerande kod för popup */
+}
+
+/* Anpassning för olika skärmbredder */
+@media (max-width: 768px) {
+  .popup {
+    width: 90%;
+    max-width: none;
+    height: auto;
+    max-height: 80%;
+    padding: 15px;
+    overflow-y: auto; /* Lägg till scroll för små skärmar */
+  }
+
+  .popup img {
+    max-width: 100%;
+    max-height: 150px; /* Justera bildstorlek för mindre skärmar */
+  }
+
+  .popup .text-content {
+    max-height: 50%; /* Texten tar mindre plats */
+  }
+
+  .popup .close {
+    font-size: 14px;
+    padding: 5px 10px;
+  }
+
+  .door {
+    width: 10%; /* Gör luckorna något större på små skärmar */
+    height: 10%;
+  }
+
+  .door .front span,
+  .door .back {
+    font-size: 1.2em; /* Justera textstorleken */
+  }
+}
+
+@media (max-width: 480px) {
+  .popup {
+    padding: 10px;
+    max-height: 70%;
+  }
+
+  .popup img {
+    max-height: 100px;
+  }
+
+  .door {
+    width: 12%; /* Större luckor för mycket små skärmar */
+    height: 12%;
+  }
+
+  .door .front span,
+  .door .back {
+    font-size: 1em; /* Ytterligare justering av textstorleken */
+  }
+}
   </style>
 </head>
 <body>

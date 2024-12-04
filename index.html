@@ -5,117 +5,126 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Julkalender</title>
   <style>
-  body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-image: url('background.jpg');
-    background-size: cover;
-    background-position: center;
-    height: 100vh;
-    color: white;
-    overflow: hidden;
-  }
-
-  .calendar {
-    position: relative;
-    width: 100%;
-    height: 100%;
-  }
-
-  .door {
-    position: absolute;
-    width: 8%;
-    height: 8%;
-    border: 2px dashed rgba(255, 255, 255, 0.8);
-    background-color: rgba(255, 255, 255, 0.05);
-    cursor: pointer;
-    transition: transform 1s ease-in-out;
-    transform-style: preserve-3d;
-    transform-origin: left center;
-  }
-
-  .popup {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 90%;
-    max-width: 600px; /* Begränsa popupens bredd */
-    max-height: 90%;
-    padding: 20px;
-    background-color: rgba(255, 255, 255, 0.95);
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-    text-align: center;
-    display: none;
-    overflow-y: auto;
-  }
-
-  .popup img {
-    max-width: 100%;
-    max-height: 200px; /* Mindre bild för små skärmar */
-    margin-bottom: 15px;
-  }
-
-  .popup .close {
-    display: inline-block;
-    margin-top: 15px;
-    padding: 10px 20px;
-    background-color: red;
-    color: white;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 1.2rem; /* Gör knappen större */
-  }
-
-  .popup .text-content {
-    font-family: 'Times New Roman', serif;
-    font-size: 1rem; /* Anpassa textstorleken */
-    line-height: 1.5;
-    color: black;
-  }
-
-  /* Media Queries för mobiler */
-  @media (max-width: 768px) {
-    .door {
-      width: 12vw; /* Större luckor för pekskärmar */
-      height: 12vw;
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-image: url('background.jpg');
+      background-size: cover;
+      background-position: center;
+      height: 100vh;
+      color: white;
+      overflow: hidden;
     }
-
+    .calendar {
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+    .door {
+      position: absolute;
+      width: 8%;
+      height: 8%;
+      border: 2px dashed rgba(255, 255, 255, 0.8);
+      background-color: rgba(255, 255, 255, 0.05);
+      cursor: pointer;
+      transition: transform 1s ease-in-out;
+      transform-style: preserve-3d;
+      transform-origin: left center;
+    }
+    .door.closed {
+      transform: rotateY(0deg);
+    }
+    .door.opened {
+      transform: rotateY(120deg);
+    }
+    .door .front {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .door .back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      transform: rotateY(180deg);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 1.5em;
+      font-family: 'Georgia', serif;
+      color: red;
+    }
     .popup {
-      max-width: 95%; /* Mindre bredd för popup */
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      transform-origin: center;
+      width: 90%;
+      max-width: 1000px;
+      padding: 30px;
+      background-color: rgba(255, 255, 255, 0.95);
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      text-align: left;
+      display: none;
+      z-index: 100;
+      animation: zoomIn 0.5s forwards;
     }
-
+    @keyframes zoomIn {
+      0% {
+        transform: translate(-50%, -50%) scale(0);
+      }
+      100% {
+        transform: translate(-50%, -50%) scale(1);
+      }
+    }
     .popup img {
-      max-height: 150px; /* Mindre bildstorlek */
+      max-width: 100%;
+      max-height: 300px;
+      margin-bottom: 15px;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
     }
-
-    .popup .close {
-      font-size: 1rem; /* Mindre knapptext */
-    }
-  }
-
-  @media (max-width: 480px) {
-    .door {
-      width: 15vw; /* Ännu större luckor för små mobiler */
-      height: 15vw;
-    }
-
-    .popup img {
-      max-height: 100px; /* Justera för små skärmar */
-    }
-
     .popup .text-content {
-      font-size: 0.9rem; /* Mindre textstorlek */
+      max-height: 400px;
+      overflow-y: auto;
+      font-family: 'Times New Roman', serif;
+      font-size: 16px;
+      color: black;
+      line-height: 1.8;
+      margin: 0;
     }
-
     .popup .close {
-      font-size: 0.9rem; /* Justera knappstorleken */
-      padding: 8px 15px; /* Mindre knappstorlek */
+      display: inline-block;
+      margin-top: 15px;
+      padding: 10px 15px;
+      background-color: red;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
     }
-  }
-</style>
+    .image-placeholder {
+      position: absolute;
+      width: 8%;
+      height: 8%;
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position: center;
+      display: none;
+    }
+    .image-placeholder.visible {
+      display: block;
+    }
+  </style>
 </head>
 <body>
   <div class="calendar">
@@ -263,88 +272,50 @@
 </div>
 <div class="image-placeholder" id="image24" style="top: 16%; left: 42%; background-image: url('image24.jpg');"></div>
 
-
+<!-- Popup -->
   <div class="popup" id="popup">
     <img id="popupImage" src="" alt="Bild">
     <div class="text-content" id="popupText"></div>
-    <a id="popupPdf" href="#" target="_blank" style="display: none;">Dagens grej</a>
+    <a id="popupLink" href="" target="_blank">Dagens grej</a>
     <div class="close" onclick="closePopup()">Stäng</div>
   </div>
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-    const today = new Date();
-    const currentDay = today.getDate();
-    const currentMonth = today.getMonth(); // Kontrollera månaden (0 = januari)
+      const today = new Date();
+      const currentDay = today.getDate();
+      const currentMonth = today.getMonth();
 
-    for (let i = 1; i <= 24; i++) {
-      const door = document.getElementById(`door${i}`);
-      const image = document.getElementById(`image${i}`);
-      const popup = document.getElementById('popup');
-      const popupImage = document.getElementById('popupImage');
-      const popupText = document.getElementById('popupText');
-      const popupPdf = document.getElementById('popupPdf');
+      for (let i = 1; i <= 24; i++) {
+        const door = document.getElementById(`door${i}`);
+        const image = document.getElementById(`image${i}`);
+        const popup = document.getElementById(`popup`);
 
-      if (door && image && popup) {
-        if (currentMonth === 11 && i <= currentDay) {
-          // Aktivera luckan för aktuellt datum
-          door.addEventListener('click', async () => {
-            door.classList.add('opened'); // Öppna luckan
-            image.classList.add('visible'); // Visa bilden bakom luckan
-
-            // Ladda in text från .html-fil
-            try {
-              const textContent = await fetchHtmlContent(`${i}.html`);
-              popupText.innerHTML = textContent;
-            } catch {
-              popupText.innerHTML = '<p>Kunde inte ladda innehåll.</p>';
-            }
-
-            // Hantera PDF-länk
-            const pdfPath = `present${i}.pdf`;
-            try {
-              const response = await fetch(pdfPath);
-              if (response.ok) {
-                popupPdf.href = pdfPath;
-                popupPdf.style.display = 'inline-block';
-              } else {
-                popupPdf.style.display = 'none';
-              }
-            } catch {
-              popupPdf.style.display = 'none';
-            }
-
-            // Visa rätt bild i popup
-            popupImage.src = `image${i}.jpg`;
-            popup.style.display = 'block';
-          });
-        } else {
-          // Inaktivera framtida luckor
-          door.style.pointerEvents = 'none';
+        if (door && image) {
+          if (currentMonth === 11 && i <= currentDay) {
+            door.addEventListener('click', async () => {
+              door.classList.add('opened');
+              image.classList.add('visible');
+              const popupImage = document.getElementById('popupImage');
+              const popupText = document.getElementById('popupText');
+              const popupLink = document.getElementById('popupLink');
+              popupImage.src = `image${i}.jpg`;
+              const textResponse = await fetch(`text${i}.html`);
+              popupText.innerHTML = await textResponse.text();
+              popupLink.href = `present${i}.pdf`;
+              popup.style.display = 'block';
+            });
+          } else {
+            door.style.pointerEvents = 'none';
+          }
         }
       }
-    }
-  });
+    });
 
-  function closePopup() {
-    const popup = document.getElementById('popup');
-    if (popup) {
+    function closePopup() {
+      const popup = document.getElementById('popup');
       popup.style.display = 'none';
     }
-  }
-
-  async function fetchHtmlContent(filePath) {
-    try {
-      const response = await fetch(filePath);
-      if (!response.ok) {
-        throw new Error('Kunde inte läsa in HTML-filen.');
-      }
-      return await response.text();
-    } catch (error) {
-      console.error(error);
-      return '<p>Kunde inte läsa in texten.</p>';
-    }
-  }
-</script>
+  </script>
 </body>
 </html>

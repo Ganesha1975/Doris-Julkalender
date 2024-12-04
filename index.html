@@ -322,58 +322,76 @@
 
   <script>
   document.addEventListener('DOMContentLoaded', () => {
-    const today = new Date();
-    const currentDay = today.getDate();
-    const currentMonth = today.getMonth(); // Kontrollera månaden (0 = januari)
+  const today = new Date();
+  const currentDay = today.getDate();
+  const currentMonth = today.getMonth(); // Kontrollera månaden (0 = januari)
 
-    for (let i = 1; i <= 24; i++) {
-      const door = document.getElementById(`door${i}`);
-      const image = document.getElementById(`image${i}`);
-      const popup = document.getElementById('popup');
-      const popupImage = document.getElementById('popupImage');
-      const popupText = document.getElementById('popupText');
-      const popupLink = document.getElementById('popupLink');
+  console.log("Dagens datum:", today); // Felsökning: Visa dagens datum i konsolen
 
-      if (door && image) {
-        if (currentMonth === 11 && i <= currentDay) {
-          door.addEventListener('click', async () => {
-            door.classList.add('opened'); // Öppna luckan
-            image.classList.add('visible'); // Visa dagens bild bakom luckan
-            popup.style.display = 'block'; // Visa popup
-            popupImage.src = `image${i}.jpg`;
-            popupText.innerHTML = await fetchHtmlContent(`${i}.html`);
-            
-            // Kontrollera om en PDF-fil finns för luckan
-            const pdfFile = `present${i}.pdf`; // PDF-filen döps till "present4.pdf", "present5.pdf" osv.
-            const pdfExists = await checkFileExists(pdfFile);
-            if (pdfExists) {
-              popupLink.href = pdfFile;
-              popupLink.style.display = 'block';
-            } else {
-              popupLink.style.display = 'none';
-            }
-          });
-        } else {
-          door.style.pointerEvents = 'none';
-        }
+  for (let i = 1; i <= 24; i++) {
+    const door = document.getElementById(`door${i}`);
+    const image = document.getElementById(`image${i}`);
+    const popup = document.getElementById('popup');
+    const popupImage = document.getElementById('popupImage');
+    const popupText = document.getElementById('popupText');
+    const popupLink = document.getElementById('popupLink');
+
+    if (door && image) {
+      if (currentMonth === 11 && i <= currentDay) {
+        console.log(`Lucka ${i} är upplåst.`); // Felsökning: Visa vilka luckor som låses upp
+        door.addEventListener('click', async () => {
+          door.classList.add('opened'); // Öppna luckan
+          image.classList.add('visible'); // Visa dagens bild bakom luckan
+          popup.style.display = 'block'; // Visa popup
+          popupImage.src = `image${i}.jpg`;
+          popupText.innerHTML = await fetchHtmlContent(`${i}.html`);
+          
+          // Kontrollera om en PDF-fil finns för luckan
+          const pdfFile = `present${i}.pdf`;
+          const pdfExists = await checkFileExists(pdfFile);
+          if (pdfExists) {
+            popupLink.href = pdfFile;
+            popupLink.style.display = 'block';
+          } else {
+            popupLink.style.display = 'none';
+          }
+        });
+      } else {
+        console.log(`Lucka ${i} är låst.`); // Felsökning: Visa vilka luckor som låses
+        door.style.pointerEvents = 'none'; // Lås luckor
       }
     }
-  });
+  }
+});
 
-  async function checkFileExists(url) {
-    try {
-      const response = await fetch(url, { method: 'HEAD' });
-      return response.ok;
-    } catch (error) {
-      console.error("Filen hittades inte:", url);
-      return false;
+async function fetchHtmlContent(filePath) {
+  try {
+    const response = await fetch(filePath);
+    if (!response.ok) {
+      throw new Error("Kunde inte läsa in HTML-filen");
     }
+    const text = await response.text();
+    return text;
+  } catch (error) {
+    console.error(error);
+    return "<p>Texten kunde inte läsas in.</p>";
   }
+}
 
-  function closePopup() {
-    const popup = document.getElementById('popup');
-    popup.style.display = 'none';
+async function checkFileExists(url) {
+  try {
+    const response = await fetch(url, { method: 'HEAD' });
+    return response.ok;
+  } catch (error) {
+    console.error("Filen hittades inte:", url);
+    return false;
   }
+}
+
+function closePopup() {
+  const popup = document.getElementById('popup');
+  popup.style.display = 'none';
+}
 </script>
 
 </body>

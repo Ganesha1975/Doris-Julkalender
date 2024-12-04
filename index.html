@@ -299,7 +299,7 @@
 document.addEventListener("DOMContentLoaded", () => {
   const today = new Date();
   const currentDay = today.getDate();
-  const currentMonth = today.getMonth();
+  const currentMonth = today.getMonth(); // Kontrollera månaden (0 = januari)
 
   for (let i = 1; i <= 24; i++) {
     const door = document.getElementById(`door${i}`);
@@ -310,7 +310,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const popupLink = document.getElementById("popupLink");
 
     if (door) {
-      // Kontrollera om luckan är aktiverad för dagens datum
+      // Kontrollera att det är december och att luckan kan öppnas
       if (currentMonth === 11 && i <= currentDay) {
         door.addEventListener("click", () => {
           door.classList.add("opened"); // Öppna luckan
@@ -320,10 +320,10 @@ document.addEventListener("DOMContentLoaded", () => {
           popupImage.src = `image${i}.jpg`;
 
           // Läs in text från HTML-fil
-          fetch(`text${i}.html`)
+          fetch(`${i}.html`)
             .then((response) => {
               if (!response.ok) {
-                throw new Error(`Kunde inte läsa in text${i}.html`);
+                throw new Error(`Kunde inte läsa in ${i}.html`);
               }
               return response.text();
             })
@@ -334,9 +334,20 @@ document.addEventListener("DOMContentLoaded", () => {
               popupText.innerHTML = "<p>Ingen text tillgänglig för denna dag.</p>";
             });
 
-          // Sätt länk för PDF
-          popupLink.href = `present${i}.pdf`;
-          popupLink.style.display = "inline-block";
+          // Kontrollera om PDF för dagen finns
+          const pdfPath = `present${i}.pdf`;
+          fetch(pdfPath)
+            .then((response) => {
+              if (response.ok) {
+                popupLink.href = pdfPath;
+                popupLink.style.display = "inline-block"; // Visa länken
+              } else {
+                popupLink.style.display = "none"; // Dölj länken om PDF saknas
+              }
+            })
+            .catch(() => {
+              popupLink.style.display = "none"; // Dölj länken om ett fel inträffar
+            });
 
           // Visa popup
           popup.style.display = "block";
@@ -349,6 +360,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
+// Funktion för att stänga popup
 function closePopup() {
   const popup = document.getElementById("popup");
   if (popup) {
@@ -356,5 +368,6 @@ function closePopup() {
   }
 }
 </script>
+
 </body>
 </html>

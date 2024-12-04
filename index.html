@@ -336,7 +336,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
           // Kontrollera om PDF för dagen finns
           const pdfPath = `present${i}.pdf`;
-          fetch(pdfPath)
+          fetch(pdfPath, { method: "HEAD" })
             .then((response) => {
               if (response.ok) {
                 popupLink.href = pdfPath;
@@ -368,6 +368,5 @@ function closePopup() {
   }
 }
 </script>
-
 </body>
 </html>

@@ -308,58 +308,78 @@
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-      const today = new Date();
-      const currentDay = today.getDate();
-      const currentMonth = today.getMonth(); // Kontrollera månaden (0 = januari)
+    const today = new Date();
+    const currentDay = today.getDate();
+    const currentMonth = today.getMonth(); // Kontrollera månaden (0 = januari)
 
-      for (let i = 1; i <= 24; i++) {
-        const door = document.getElementById(`door${i}`);
-        const image = document.getElementById(`image${i}`);
-        const popup = document.getElementById('popup');
-        const popupImage = document.getElementById('popupImage');
-        const popupText = document.getElementById('popupText');
-        const popupPdf = document.getElementById('popupPdf');
+    for (let i = 1; i <= 24; i++) {
+      const door = document.getElementById(`door${i}`);
+      const image = document.getElementById(`image${i}`);
+      const popup = document.getElementById('popup');
+      const popupImage = document.getElementById('popupImage');
+      const popupText = document.getElementById('popupText');
+      const popupPdf = document.getElementById('popupPdf');
 
-        if (door && image && popup) {
-          if (currentMonth === 11 && i <= currentDay) {
-            door.addEventListener('click', async () => {
-              door.classList.add('opened');
-              image.classList.add('visible');
+      if (door && image && popup) {
+        if (currentMonth === 11 && i <= currentDay) {
+          // Aktivera luckan för aktuellt datum
+          door.addEventListener('click', async () => {
+            door.classList.add('opened'); // Öppna luckan
+            image.classList.add('visible'); // Visa bilden bakom luckan
 
-              // Läs in HTML-text för luckan
+            // Ladda in text från .html-fil
+            try {
               const textContent = await fetchHtmlContent(`${i}.html`);
               popupText.innerHTML = textContent;
+            } catch {
+              popupText.innerHTML = '<p>Kunde inte ladda innehåll.</p>';
+            }
 
-              // Visa eventuell PDF-länk
-              const pdfPath = `${i}.pdf`;
-              try {
-                const pdfResponse = await fetch(pdfPath);
-                if (pdfResponse.ok) {
-                  popupPdf.href = pdfPath;
-                  popupPdf.style.display = 'inline-block';
-                } else {
-                  popupPdf.style.display = 'none';
-                }
-              } catch {
+            // Hantera PDF-länk
+            const pdfPath = `present${i}.pdf`;
+            try {
+              const response = await fetch(pdfPath);
+              if (response.ok) {
+                popupPdf.href = pdfPath;
+                popupPdf.style.display = 'inline-block';
+              } else {
                 popupPdf.style.display = 'none';
               }
+            } catch {
+              popupPdf.style.display = 'none';
+            }
 
-              popupImage.src = `image${i}.jpg`;
-              popup.style.display = 'block';
-            });
-          } else {
-            door.style.pointerEvents = 'none';
-          }
+            // Visa rätt bild i popup
+            popupImage.src = `image${i}.jpg`;
+            popup.style.display = 'block';
+          });
+        } else {
+          // Inaktivera framtida luckor
+          door.style.pointerEvents = 'none';
         }
       }
-    });
-
-    function closePopup() {
-      const popup = document.getElementById('popup');
-      if (popup) {
-        popup.style.display = 'none';
-      }
     }
-  </script>
+  });
+
+  function closePopup() {
+    const popup = document.getElementById('popup');
+    if (popup) {
+      popup.style.display = 'none';
+    }
+  }
+
+  async function fetchHtmlContent(filePath) {
+    try {
+      const response = await fetch(filePath);
+      if (!response.ok) {
+        throw new Error('Kunde inte läsa in HTML-filen.');
+      }
+      return await response.text();
+    } catch (error) {
+      console.error(error);
+      return '<p>Kunde inte läsa in texten.</p>';
+    }
+  }
+</script>
 </body>
 </html>

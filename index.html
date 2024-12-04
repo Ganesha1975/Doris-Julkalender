@@ -176,16 +176,16 @@
     <!-- Fortsätt med luckor och bilder för 4–24 -->
   </div>
 <div class="door closed" id="door4" style="top: 30%; left: 12%;">
-  <div class="front"><span style="color: yellow;">4</span></div>
-  <div class="back">4</div>
-</div>
-<div class="image-placeholder" id="image4" style="top: 30%; left: 12%; background-image: url('image4.jpg');"></div>
+    <div class="front"><span style="color: yellow;">4</span></div>
+    <div class="back">4</div>
+  </div>
+  <div class="image-placeholder" id="image4" style="top: 30%; left: 12%; background-image: url('image4.jpg');"></div>
 
 <div class="door closed" id="door5" style="top: 28%; left: 70%;">
-  <div class="front"><span style="color: white;">5</span></div>
-  <div class="back">5</div>
-</div>
-<div class="image-placeholder" id="image5" style="top: 28%; left: 70%; background-image: url('image5.jpg');"></div>
+    <div class="front"><span style="color: white;">5</span></div>
+    <div class="back">5</div>
+  </div>
+  <div class="image-placeholder" id="image5" style="top: 28%; left: 70%; background-image: url('image5.jpg');"></div>
 
 <div class="door closed" id="door6" style="top: 45%; left: 20%;">
   <div class="front"><span style="color: white;">6</span></div>
@@ -320,10 +320,11 @@
     }
   }
 
+  <script>
   document.addEventListener('DOMContentLoaded', () => {
     const today = new Date();
     const currentDay = today.getDate();
-    const currentMonth = today.getMonth();
+    const currentMonth = today.getMonth(); // Kontrollera månaden (0 = januari)
 
     for (let i = 1; i <= 24; i++) {
       const door = document.getElementById(`door${i}`);
@@ -331,15 +332,26 @@
       const popup = document.getElementById('popup');
       const popupImage = document.getElementById('popupImage');
       const popupText = document.getElementById('popupText');
+      const popupLink = document.getElementById('popupLink');
 
       if (door && image) {
         if (currentMonth === 11 && i <= currentDay) {
           door.addEventListener('click', async () => {
-            door.classList.add('opened');
-            image.classList.add('visible');
-            popup.style.display = 'block';
+            door.classList.add('opened'); // Öppna luckan
+            image.classList.add('visible'); // Visa dagens bild bakom luckan
+            popup.style.display = 'block'; // Visa popup
             popupImage.src = `image${i}.jpg`;
             popupText.innerHTML = await fetchHtmlContent(`${i}.html`);
+            
+            // Kontrollera om en PDF-fil finns för luckan
+            const pdfFile = `present${i}.pdf`; // PDF-filen döps till "present4.pdf", "present5.pdf" osv.
+            const pdfExists = await checkFileExists(pdfFile);
+            if (pdfExists) {
+              popupLink.href = pdfFile;
+              popupLink.style.display = 'block';
+            } else {
+              popupLink.style.display = 'none';
+            }
           });
         } else {
           door.style.pointerEvents = 'none';
@@ -348,10 +360,21 @@
     }
   });
 
+  async function checkFileExists(url) {
+    try {
+      const response = await fetch(url, { method: 'HEAD' });
+      return response.ok;
+    } catch (error) {
+      console.error("Filen hittades inte:", url);
+      return false;
+    }
+  }
+
   function closePopup() {
     const popup = document.getElementById('popup');
     popup.style.display = 'none';
   }
 </script>
+
 </body>
 </html>

@@ -293,20 +293,6 @@
   </div>
 
   <script>
-    async function fetchHtmlContent(filePath) {
-      try {
-        const response = await fetch(filePath);
-        if (!response.ok) {
-          throw new Error("Kunde inte läsa in HTML-filen");
-        }
-        const text = await response.text();
-        return text;
-      } catch (error) {
-        console.error(error);
-        return "<p>Texten kunde inte läsas in.</p>";
-      }
-    }
-
     document.addEventListener('DOMContentLoaded', () => {
     const today = new Date();
     const currentDay = today.getDate();

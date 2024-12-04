@@ -5,138 +5,117 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Julkalender</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background-image: url('background.jpg');
-      background-size: cover;
-      background-position: center;
-      height: 100vh;
-      color: white;
-      overflow: hidden;
-    }
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-image: url('background.jpg');
+    background-size: cover;
+    background-position: center;
+    height: 100vh;
+    color: white;
+    overflow: hidden;
+  }
 
-    .calendar {
-      position: relative;
-      width: 100%;
-      height: 100%;
-    }
+  .calendar {
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
 
+  .door {
+    position: absolute;
+    width: 8%;
+    height: 8%;
+    border: 2px dashed rgba(255, 255, 255, 0.8);
+    background-color: rgba(255, 255, 255, 0.05);
+    cursor: pointer;
+    transition: transform 1s ease-in-out;
+    transform-style: preserve-3d;
+    transform-origin: left center;
+  }
+
+  .popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%;
+    max-width: 600px; /* Begränsa popupens bredd */
+    max-height: 90%;
+    padding: 20px;
+    background-color: rgba(255, 255, 255, 0.95);
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    display: none;
+    overflow-y: auto;
+  }
+
+  .popup img {
+    max-width: 100%;
+    max-height: 200px; /* Mindre bild för små skärmar */
+    margin-bottom: 15px;
+  }
+
+  .popup .close {
+    display: inline-block;
+    margin-top: 15px;
+    padding: 10px 20px;
+    background-color: red;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1.2rem; /* Gör knappen större */
+  }
+
+  .popup .text-content {
+    font-family: 'Times New Roman', serif;
+    font-size: 1rem; /* Anpassa textstorleken */
+    line-height: 1.5;
+    color: black;
+  }
+
+  /* Media Queries för mobiler */
+  @media (max-width: 768px) {
     .door {
-      position: absolute;
-      width: 8%;
-      height: 8%;
-      border: 2px dashed rgba(255, 255, 255, 0.8);
-      background-color: rgba(255, 255, 255, 0.05);
-      cursor: pointer;
-      transition: transform 1s ease-in-out;
-      transform-style: preserve-3d;
-      transform-origin: left center;
-    }
-
-    .door.closed {
-      transform: rotateY(0deg);
-    }
-
-    .door.opened {
-      transform: rotateY(120deg);
-    }
-
-    .door .front {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      backface-visibility: hidden;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .door .front span {
-      font-size: 1.5em;
-      font-family: 'Georgia', serif;
-      color: white;
+      width: 12vw; /* Större luckor för pekskärmar */
+      height: 12vw;
     }
 
     .popup {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%) scale(0);
-      transform-origin: center;
-      width: 90%;
-      max-width: 1000px;
-      padding: 30px;
-      background-color: rgba(255, 255, 255, 0.95);
-      border-radius: 10px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-      text-align: left;
-      display: none;
-      z-index: 100;
-      animation: zoomIn 0.5s forwards;
-    }
-
-    @keyframes zoomIn {
-      0% {
-        transform: translate(-50%, -50%) scale(0);
-      }
-      100% {
-        transform: translate(-50%, -50%) scale(1);
-      }
+      max-width: 95%; /* Mindre bredd för popup */
     }
 
     .popup img {
-      max-width: 100%;
-      max-height: 300px;
-      margin-bottom: 15px;
-      display: block;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    .popup .text-content {
-      max-height: 400px;
-      overflow-y: auto;
-      font-family: 'Times New Roman', serif;
-      font-size: 16px;
-      color: black;
-      line-height: 1.8;
-      margin: 0;
+      max-height: 150px; /* Mindre bildstorlek */
     }
 
     .popup .close {
-      display: inline-block;
-      margin-top: 15px;
-      padding: 10px 15px;
-      background-color: red;
-      color: white;
-      border-radius: 5px;
-      cursor: pointer;
-      font-size: 14px;
+      font-size: 1rem; /* Mindre knapptext */
+    }
+  }
+
+  @media (max-width: 480px) {
+    .door {
+      width: 15vw; /* Ännu större luckor för små mobiler */
+      height: 15vw;
     }
 
-    .popup a {
-      text-decoration: none;
-      color: blue;
-      display: inline-block;
-      margin-top: 15px;
+    .popup img {
+      max-height: 100px; /* Justera för små skärmar */
     }
 
-    .image-placeholder {
-      position: absolute;
-      width: 8%;
-      height: 8%;
-      background-size: cover;
-      background-repeat: no-repeat;
-      background-position: center;
-      display: none;
+    .popup .text-content {
+      font-size: 0.9rem; /* Mindre textstorlek */
     }
 
-    .image-placeholder.visible {
-      display: block;
+    .popup .close {
+      font-size: 0.9rem; /* Justera knappstorleken */
+      padding: 8px 15px; /* Mindre knappstorlek */
     }
-  </style>
+  }
+</style>
 </head>
 <body>
   <div class="calendar">
